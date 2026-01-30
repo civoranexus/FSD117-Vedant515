@@ -1,0 +1,166 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: #f4f6fb;
+  color: #222;
+}
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 80px;
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
+
+.logo span {
+  font-weight: 700;
+  font-size: 18px;
+  color: white;
+}
+
+.logo small {
+  display: block;
+  font-size: 11px;
+  opacity: 0.8;
+  color: white;
+}
+
+.navbar nav a {
+  color: #fff;
+  margin-left: 25px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.admin-btn {
+  font-weight: 600;
+}
+
+
+.hero {
+  min-height: 90vh;
+  background: linear-gradient(135deg, #0b1437, #0f3c8c);
+  color: #fff;
+  padding: 150px 20px 0;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 42px;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  max-width: 600px;
+  margin: auto;
+  font-size: 15px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.primary-btn {
+  margin-top: 30px;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  color: #4f46e5;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.how-it-works {
+  padding: 80px 60px;
+  background: #fff;
+  text-align: center;
+}
+
+.how-it-works h2 {
+  font-size: 26px;
+}
+
+.subtitle {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 50px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 30px;
+  width: 280px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  text-align: left;
+}
+
+.icon {
+  font-size: 22px;
+  background: #eef2ff;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.card h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+
+
+.vendor {
+  background: #b3b3b3;
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.vendor h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.vendor p {
+  font-size: 14px;
+  max-width: 600px;
+  margin: auto;
+  color: #222;
+}
+
+.vendor-btn {
+  margin-top: 20px;
+  padding: 12px 25px;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
