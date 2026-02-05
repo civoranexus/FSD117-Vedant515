@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VendorVerify Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ================= RESET ================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+body{
+  background:#f5f6f8;
+}
+
+/* ================= LAYOUT ================= */
+.app{
+  display:flex;
+  height:100vh;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+  width:260px;
+  background:linear-gradient(#0f172a,#020617);
+  color:#fff;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+}
+.logo{
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:40px;
+}
+.nav button{
+  width:100%;
+  background:none;
+  border:none;
+  color:#fff;
+  text-align:left;
+  padding:14px 18px;
+  border-radius:14px;
+  margin-bottom:10px;
+  cursor:pointer;
+  opacity:.7;
+}
+.nav button.active,
+.nav button:hover{
+  background:rgba(255,255,255,.15);
+  opacity:1;
+}
+.bottom{
+  margin-top:auto;
+  border-top:1px solid rgba(255,255,255,.2);
+  padding-top:20px;
+}
+
+/* ================= MAIN ================= */
+.main{
+  flex:1;
+  background:#fff;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:22px 40px;
+}
+.topbar h2{
+  font-size:22px;
+}
+.user{
+  text-align:right;
+  font-size:14px;
+}
+hr{
+  border:none;
+  border-top:1px solid #ddd;
+}
+
+/* ================= PAGES ================= */
+.page{
+  display:none;
+  padding:40px;
+}
+.page.active{
+  display:block;
+}
+.subtitle{
+  color:#555;
+  margin:8px 0 30px;
+}
+
+/* ================= CARDS ================= */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:25px;
+}
+.card{
+  background:#fff;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+.card h3{
+  font-size:14px;
+  color:#555;
+}
+.card h1{
+  margin-top:8px;
+  font-size:28px;
+}
+
+/* ================= TABLE ================= */
+.table{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  overflow:hidden;
+}
+.table table{
+  width:100%;
+  border-collapse:collapse;
+}
+.table th,
+.table td{
+  padding:18px;
+  text-align:left;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+.badge{
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:13px;
+}
+.green{background:#d1fae5;color:#065f46;}
+.red{background:#fee2e2;color:#991b1b;}
+.yellow{background:#fef3c7;color:#92400e;}
+
+/* ================= AUDIT ================= */
+.audit-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:25px;
+  margin-bottom:30px;
+}
+.audit-card{
+  background:#fff;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  display:flex;
+  gap:15px;
+  align-items:center;
+}
+.audit-card .icon{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+}
+.success .icon{background:#d1fae5;color:#065f46;}
+.danger .icon{background:#fee2e2;color:#991b1b;}
+.warning .icon{background:#fef3c7;color:#92400e;}
+
+.audit-box{
+  background:#fff;
+  border-radius:18px;
+  padding:60px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+.audit-box p{
+  margin-top:10px;
+  color:#666;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+  .cards,.audit-cards{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar">
+  <div class="logo">🛡 VendorVerify</div>
+
+  <div class="nav">
+    <button class="active" onclick="showPage('dash',this)">📊 Dashboard</button>
+    <button onclick="showPage('vendors',this)">👤 Vendors</button>
+    <button onclick="showPage('products',this)">📦 Products</button>
+    <button onclick="showPage('qr',this)">🔳 QR Codes</button>
+    <button onclick="showPage('audit',this)">📄 Audit Logs</button>
+  </div>
+
+  <div class="bottom">
+    <button>⬅ Back to Home</button>
+    <button>🚪 Sign Out</button>
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="main">
+
+<header class="topbar">
+  <h2 id="title">Admin Dashboard</h2>
+  <div class="user">
+    <div>admin@gmail.com</div>
+    <small>vedant</small>
+  </div>
+</header>
+<hr>
+
+<!-- ================= DASHBOARD ================= -->
+<section id="dash" class="page active">
+  <h1>System Overview</h1>
+  <p class="subtitle">Monitor vendors, products, and QR authentication activity.</p>
+
+  <div class="cards">
+    <div class="card"><h3>Total Vendors</h3><h1>1</h1></div>
+    <div class="card"><h3>Total Products</h3><h1>1</h1></div>
+    <div class="card"><h3>Total QR Codes</h3><h1>1</h1></div>
+  </div>
+
+  <div class="cards" style="margin-top:25px">
+    <div class="card"><h3>Total Scans</h3><h1>0</h1></div>
+    <div class="card"><h3>Valid Scans</h3><h1>0</h1></div>
+    <div class="card"><h3>Invalid/Fake</h3><h1>0</h1></div>
+  </div>
+</section>
+
+<!-- ================= VENDORS ================= -->
+<section id="vendors" class="page">
+  <h1>All Vendors</h1>
+  <p class="subtitle">View and manage registered vendors</p>
+
+  <div class="table">
+    <table>
+      <tr>
+        <th>Vendor</th><th>Code</th><th>Email</th><th>Products</th><th>Status</th><th>Registered</th>
+      </tr>
+      <tr>
+        <td>vedant</td>
+        <td>VND-38409C47</td>
+        <td>admin@gmail.com</td>
+        <td>1</td>
+        <td><span class="badge green">Active</span></td>
+        <td>23/01/2026</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= PRODUCTS ================= -->
+<section id="products" class="page">
+  <h1>All Products</h1>
+  <p class="subtitle">View all registered products across vendors</p>
+
+  <div class="table">
+    <table>
+      <tr>
+        <th>Product</th><th>Vendor</th><th>Category</th><th>Status</th><th>Scans</th><th>Created</th>
+      </tr>
+      <tr>
+        <td>hj</td>
+        <td>vedant</td>
+        <td>game</td>
+        <td><span class="badge green">active</span></td>
+        <td>0</td>
+        <td>23/01/2026</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= QR ================= -->
+<section id="qr" class="page">
+  <h1>All QR Codes</h1>
+  <p class="subtitle">Monitor all generated QR codes and their usage</p>
+
+  <div class="table">
+    <table>
+      <tr>
+        <th>Token</th><th>Product</th><th>Vendor</th><th>Status</th><th>Scans</th><th>Created</th>
+      </tr>
+      <tr>
+        <td>QR-F25EFE8A...</td>
+        <td>hj</td>
+        <td>vedant</td>
+        <td><span class="badge green">Active</span></td>
+        <td>0</td>
+        <td>23/01/2026</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= AUDIT ================= -->
+<section id="audit" class="page">
+  <h1>Audit Logs</h1>
+  <p class="subtitle">Complete history of all QR scan attempts</p>
+
+  <div class="audit-cards">
+    <div class="audit-card success">
+      <div class="icon">✔</div>
+      <div><h2>0</h2><p>Valid Scans</p></div>
+    </div>
+    <div class="audit-card danger">
+      <div class="icon">✖</div>
+      <div><h2>0</h2><p>Invalid/Fake</p></div>
+    </div>
+    <div class="audit-card warning">
+      <div class="icon">⚠</div>
+      <div><h2>0</h2><p>Already Used</p></div>
+    </div>
+  </div>
+
+  <div class="audit-box">
+    📄
+    <p>No scan logs yet</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+
+  document.getElementById("title").innerText =
+    id==="dash"?"Admin Dashboard":
+    id==="vendors"?"Vendors":
+    id==="products"?"Products":
+    id==="qr"?"QR Codes":"Audit Logs";
+}
+</script>
+
+</body>
+</html>

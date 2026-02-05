@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VendorVerify Dashboard</title>
+  <link rel="stylesheet" href="vendoradmin.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      🛡️ <span>VendorVerify</span>
+    </div>
+
+    <nav>
+      <button class="nav-item active" onclick="showPage('dash')">
+        ⬛ Dashboard
+      </button>
+      <button class="nav-item" onclick="showPage('products')">
+        📦 Products
+      </button>
+    </nav>
+
+    <div class="bottom">
+      <button class="nav-item">⬅ Back to Home</button>
+      <button class="nav-item logout">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <h2 id="pageTitle">Dashboard</h2>
+      <div class="user">
+        <div>admin@gmail.com</div>
+        <small>vedant</small>
+      </div>
+    </header>
+
+    <hr>
+
+    <!-- DASHBOARD PAGE -->
+    <section id="dash" class="page active">
+      <h1>Welcome back, vedant!</h1>
+      <p class="subtitle">
+        Here's an overview of your product authentication system.
+      </p>
+
+      <div class="cards">
+        <div class="card"><p>Total Products</p><h2>0</h2></div>
+        <div class="card"><p>Total QR Codes</p><h2>0</h2></div>
+        <div class="card"><p>Active QR Codes</p><h2>0</h2></div>
+        <div class="card"><p>Total Scans</p><h2>0</h2></div>
+      </div>
+
+      <div class="recent">
+        <h3>Recent Scans</h3>
+        <p>No scans yet. Your product scans will appear here.</p>
+      </div>
+    </section>
+
+    <!-- PRODUCTS PAGE -->
+    <section id="products" class="page">
+      <div class="products-header">
+        <div>
+          <h1>Your Products</h1>
+          <p class="subtitle">Manage your products and their QR codes</p>
+        </div>
+        <button class="add-btn" onclick="openModal()">+ Add Product</button>
+
+      </div>
+<div class="product-card">
+
+  <!-- THREE DOTS -->
+  <div class="menu">
+    <span onclick="toggleMenu(this)">⋯</span>
+
+    <div class="menu-box">
+      <button onclick="openQRModal()">🔳 View QR Code</button>
+      <button class="delete">🗑 Delete</button>
+    </div>
+  </div>
+
+  <h3>hj</h3>
+  <p>game</p>
+  <p>jh</p>
+
+  <div class="qr">
+    🔳 QR-F25EFE8A...
+    <span>Status: <b>active</b></span>
+    👁 0
+  </div>
+
+</div>
+
+    </section>
+<!-- ADD PRODUCT MODAL -->
+<div id="productModal" class="modal">
+
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Add New Product</h3>
+      <span class="close" onclick="closeModal()">✕</span>
+    </div>
+
+    <label>Product Name *</label>
+    <input type="text" placeholder="Enter product name">
+
+    <label>Description</label>
+    <textarea placeholder="Enter product description"></textarea>
+
+    <label>Category</label>
+    <input type="text" placeholder="e.g., Electronics, Clothing">
+
+    <label>Image URL</label>
+    <input type="text" placeholder="https://example.com/image.jpg">
+
+    <button class="create-btn">
+      Create Product & Generate QR
+    </button>
+  </div>
+
+</div>
+<div id="qrModal" class="modal">
+
+  <div class="modal-box qr-box">
+
+    <div class="modal-header">
+      <h3>hj - QR Code</h3>
+      <span onclick="closeQRModal()">✕</span>
+    </div>
+
+    <div class="qr-preview">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=QR-F25EFE8A">
+    </div>
+
+    <p class="qr-id">QR-F25EFE8A-84B-723FA33A</p>
+
+    <span class="status">Active</span>
+
+    <button class="download-btn">
+      ⬇ Download QR
+    </button>
+
+  </div>
+</div>
+
+  </main>
+
+</div>
+<script>
+  function openQRModal() {
+  document.getElementById("qrModal").style.display = "flex";
+}
+
+function closeQRModal() {
+  document.getElementById("qrModal").style.display = "none";
+}
+
+  function toggleMenu(el) {
+  document.querySelectorAll('.menu-box').forEach(m => m.style.display = "none");
+  el.nextElementSibling.style.display = "block";
+}
+
+document.addEventListener("click", e => {
+  if (!e.target.closest(".menu")) {
+    document.querySelectorAll('.menu-box').forEach(m => m.style.display = "none");
+  }
+});
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  document.getElementById("pageTitle").innerText =
+    id === "dash" ? "Dashboard" : "Products";
+}
+function openModal() {
+  document.getElementById("productModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("productModal").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>
