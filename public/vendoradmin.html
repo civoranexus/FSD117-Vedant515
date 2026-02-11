@@ -16,55 +16,51 @@
     </div>
 
     <nav>
-      <button class="nav-item active" onclick="showPage('dash')">
+      <button class="nav-item active" onclick="showPage('dash', this)">
         ⬛ Dashboard
       </button>
-      <button class="nav-item" onclick="showPage('products')">
+      <button class="nav-item" onclick="showPage('products', this)">
         📦 Products
       </button>
     </nav>
 
     <div class="bottom">
-      <button class="nav-item">⬅ Back to Home</button>
-      <button class="nav-item logout">🚪 Sign Out</button>
+      <button class="nav-item logout" onclick="logout()">🚪 Sign Out</button>
     </div>
   </aside>
 
   <!-- MAIN -->
   <main class="main">
 
-    <!-- TOP BAR -->
     <header class="topbar">
       <h2 id="pageTitle">Dashboard</h2>
       <div class="user">
-        <div>admin@gmail.com</div>
-        <small>vedant</small>
+        <div id="vendorEmail"></div>
+        <small id="vendorName"></small>
       </div>
     </header>
 
     <hr>
 
-    <!-- DASHBOARD PAGE -->
+    <!-- DASHBOARD -->
     <section id="dash" class="page active">
-      <h1>Welcome back, vedant!</h1>
-      <p class="subtitle">
-        Here's an overview of your product authentication system.
-      </p>
+      <h1>Welcome back, <span id="welcomeName"></span>!</h1>
+      <p class="subtitle">Here's an overview of your product authentication system.</p>
 
       <div class="cards">
-        <div class="card"><p>Total Products</p><h2>0</h2></div>
-        <div class="card"><p>Total QR Codes</p><h2>0</h2></div>
-        <div class="card"><p>Active QR Codes</p><h2>0</h2></div>
-        <div class="card"><p>Total Scans</p><h2>0</h2></div>
+        <div class="card"><p>Total Products</p><h2 id="totalProducts">0</h2></div>
+        <div class="card"><p>Total QR Codes</p><h2 id="totalQR">0</h2></div>
+        <div class="card"><p>Active QR Codes</p><h2 id="activeQR">0</h2></div>
+        <div class="card"><p>Total Scans</p><h2 id="totalScans">0</h2></div>
       </div>
 
       <div class="recent">
         <h3>Recent Scans</h3>
-        <p>No scans yet. Your product scans will appear here.</p>
+        <p>No scans yet.</p>
       </div>
     </section>
 
-    <!-- PRODUCTS PAGE -->
+    <!-- PRODUCTS -->
     <section id="products" class="page">
       <div class="products-header">
         <div>
@@ -72,36 +68,17 @@
           <p class="subtitle">Manage your products and their QR codes</p>
         </div>
         <button class="add-btn" onclick="openModal()">+ Add Product</button>
-
       </div>
-<div class="product-card">
 
-  <!-- THREE DOTS -->
-  <div class="menu">
-    <span onclick="toggleMenu(this)">⋯</span>
+      <div id="productContainer"></div>
+    </section>
 
-    <div class="menu-box">
-      <button onclick="openQRModal()">🔳 View QR Code</button>
-      <button class="delete">🗑 Delete</button>
-    </div>
-  </div>
-
-  <h3>hj</h3>
-  <p>game</p>
-  <p>jh</p>
-
-  <div class="qr">
-    🔳 QR-F25EFE8A...
-    <span>Status: <b>active</b></span>
-    👁 0
-  </div>
+  </main>
 
 </div>
 
-    </section>
 <!-- ADD PRODUCT MODAL -->
 <div id="productModal" class="modal">
-
   <div class="modal-box">
     <div class="modal-header">
       <h3>Add New Product</h3>
@@ -109,80 +86,168 @@
     </div>
 
     <label>Product Name *</label>
-    <input type="text" placeholder="Enter product name">
+    <input type="text" id="productName">
 
     <label>Description</label>
-    <textarea placeholder="Enter product description"></textarea>
+    <textarea id="productDescription"></textarea>
 
     <label>Category</label>
-    <input type="text" placeholder="e.g., Electronics, Clothing">
+    <input type="text" id="productCategory">
 
-    <label>Image URL</label>
-    <input type="text" placeholder="https://example.com/image.jpg">
-
-    <button class="create-btn">
+    <button class="create-btn" onclick="createProduct()">
       Create Product & Generate QR
     </button>
   </div>
-
 </div>
+
+<!-- QR MODAL -->
 <div id="qrModal" class="modal">
-
   <div class="modal-box qr-box">
-
     <div class="modal-header">
-      <h3>hj - QR Code</h3>
+      <h3 id="qrTitle"></h3>
       <span onclick="closeQRModal()">✕</span>
     </div>
 
     <div class="qr-preview">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=QR-F25EFE8A">
+      <img id="qrImage" />
     </div>
 
-    <p class="qr-id">QR-F25EFE8A-84B-723FA33A</p>
+    <p id="qrTokenText"></p>
 
-    <span class="status">Active</span>
-
-    <button class="download-btn">
+    <!-- 🔥 DOWNLOAD BUTTON -->
+    <button class="download-btn" onclick="downloadQR()">
       ⬇ Download QR
     </button>
-
   </div>
 </div>
 
-  </main>
-
-</div>
 <script>
-  function openQRModal() {
+
+const token = localStorage.getItem("token");
+const name = localStorage.getItem("name");
+
+if (!token) window.location.href = "vendor.html";
+
+document.getElementById("vendorName").innerText = name;
+document.getElementById("welcomeName").innerText = name;
+
+async function loadProducts() {
+  const res = await fetch("/api/vendor/products", {
+    headers: { Authorization: "Bearer " + token }
+  });
+
+  const products = await res.json();
+  const container = document.getElementById("productContainer");
+  container.innerHTML = "";
+
+  document.getElementById("totalProducts").innerText = products.length;
+  document.getElementById("totalQR").innerText = products.length;
+  document.getElementById("activeQR").innerText = products.length;
+
+  const totalScans = products.reduce((sum, p) => sum + (p.scans || 0), 0);
+  document.getElementById("totalScans").innerText = totalScans;
+
+  products.forEach(p => {
+    container.innerHTML += `
+      <div class="product-card">
+        <div class="menu">
+          <span onclick="toggleMenu(this)">⋯</span>
+          <div class="menu-box">
+            <button onclick="viewQR('${p.name}','${p.qrImage}','${p.qrToken}')">
+              🔳 View QR Code
+            </button>
+            <button class="delete" onclick="deleteProduct('${p._id}')">
+              🗑 Delete
+            </button>
+          </div>
+        </div>
+
+        <h3>${p.name}</h3>
+        <p>${p.category}</p>
+        <p>${p.description || ""}</p>
+        <p><strong>Total Scans:</strong> ${p.scans || 0}</p>
+
+        <div class="qr">
+          ${p.qrToken}
+          <span>Status: <b>active</b></span>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function viewQR(name, image, token) {
+  document.getElementById("qrTitle").innerText = name + " - QR Code";
+  document.getElementById("qrImage").src = image;
+  document.getElementById("qrTokenText").innerText = token;
   document.getElementById("qrModal").style.display = "flex";
+}
+
+/* 🔥 DOWNLOAD FUNCTION */
+function downloadQR() {
+  const img = document.getElementById("qrImage");
+  const token = document.getElementById("qrTokenText").innerText;
+  const title = document.getElementById("qrTitle").innerText.split(" - ")[0];
+
+  const link = document.createElement("a");
+  link.href = img.src;
+  link.download = `${title}-${token}.png`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 function closeQRModal() {
   document.getElementById("qrModal").style.display = "none";
 }
 
-  function toggleMenu(el) {
+async function loadRecentScans() {
+  const res = await fetch("/api/vendor/scans", {
+    headers: { Authorization: "Bearer " + token }
+  });
+
+  const logs = await res.json();
+  const recentDiv = document.querySelector(".recent");
+
+  if (!logs.length) {
+    recentDiv.innerHTML = "<h3>Recent Scans</h3><p>No scans yet.</p>";
+    return;
+  }
+
+  recentDiv.innerHTML = "<h3>Recent Scans</h3>";
+
+  logs.forEach(log => {
+    recentDiv.innerHTML += `
+      <p>
+        ${log.product?.name || "Unknown"} -
+        <b>${log.type}</b> -
+        ${new Date(log.createdAt).toLocaleString()}
+      </p>
+    `;
+  });
+}
+
+function toggleMenu(el) {
   document.querySelectorAll('.menu-box').forEach(m => m.style.display = "none");
   el.nextElementSibling.style.display = "block";
 }
 
 document.addEventListener("click", e => {
-  if (!e.target.closest(".menu")) {
+  if (!e.target.closest(".menu"))
     document.querySelectorAll('.menu-box').forEach(m => m.style.display = "none");
-  }
 });
 
-function showPage(id) {
+function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  btn.classList.add('active');
 
   document.getElementById("pageTitle").innerText =
     id === "dash" ? "Dashboard" : "Products";
 }
+
 function openModal() {
   document.getElementById("productModal").style.display = "flex";
 }
@@ -190,6 +255,41 @@ function openModal() {
 function closeModal() {
   document.getElementById("productModal").style.display = "none";
 }
+
+async function createProduct() {
+  const name = document.getElementById("productName").value;
+  const description = document.getElementById("productDescription").value;
+  const category = document.getElementById("productCategory").value;
+
+  await fetch("/api/vendor/products", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ name, description, category })
+  });
+
+  closeModal();
+  loadProducts();
+}
+
+async function deleteProduct(id) {
+  await fetch("/api/vendor/products/" + id, {
+    method: "DELETE",
+    headers: { Authorization: "Bearer " + token }
+  });
+
+  loadProducts();
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "vendor.html";
+}
+
+loadProducts();
+loadRecentScans();
 
 </script>
 

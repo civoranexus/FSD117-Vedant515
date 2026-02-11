@@ -35,7 +35,7 @@
       <input type="password" placeholder="••••••••">
     </div>
 
-    <button class="submit-btn">Sign In</button>
+    <button type="submit" class="submit-btn">Sign In</button>
   </form>
 
   <form id="signupForm" class="hidden">
@@ -63,26 +63,74 @@
 </div>
 
 <p class="footer">🔐 VendorVerify Secure Portal</p>
-
 <script>
-  const loginBtn = document.getElementById("loginBtn");
-  const signupBtn = document.getElementById("signupBtn");
-  const loginForm = document.getElementById("loginForm");
-  const signupForm = document.getElementById("signupForm");
+console.log("JS READY");
 
-  loginBtn.onclick = () => {
-    loginBtn.classList.add("active");
-    signupBtn.classList.remove("active");
-    loginForm.classList.remove("hidden");
-    signupForm.classList.add("hidden");
-  };
+const loginBtn = document.getElementById("loginBtn");
+const signupBtn = document.getElementById("signupBtn");
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
 
-  signupBtn.onclick = () => {
-    signupBtn.classList.add("active");
-    loginBtn.classList.remove("active");
-    signupForm.classList.remove("hidden");
-    loginForm.classList.add("hidden");
-  };
+// Toggle logic
+loginBtn.onclick = () => {
+  loginBtn.classList.add("active");
+  signupBtn.classList.remove("active");
+  loginForm.classList.remove("hidden");
+  signupForm.classList.add("hidden");
+};
+
+signupBtn.onclick = () => {
+  signupBtn.classList.add("active");
+  loginBtn.classList.remove("active");
+  signupForm.classList.remove("hidden");
+  loginForm.classList.add("hidden");
+};
+
+// ================= SIGNUP =================
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = signupForm.querySelector("input[type='text']").value;
+  const email = signupForm.querySelectorAll("input[type='email']")[0].value;
+  const password = signupForm.querySelectorAll("input[type='password']")[0].value;
+
+  const res = await fetch("/api/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password })
+  });
+
+  const data = await res.json();
+  console.log("SIGNUP RESPONSE:", data);
+  alert(data.message);
+});
+
+// ================= LOGIN =================
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = loginForm.querySelector("input[type='email']").value;
+  const password = loginForm.querySelector("input[type='password']").value;
+
+  const res = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+  console.log("LOGIN RESPONSE:", data);
+
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
+    localStorage.setItem("name", data.name);
+
+    window.location.href = "vendoradmin.html";
+  } else {
+    alert(data.message);
+  }
+});
 </script>
 
 </body>

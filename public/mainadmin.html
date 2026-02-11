@@ -193,11 +193,8 @@ hr{
 </style>
 </head>
 
-<body>
-
 <div class="app">
 
-<!-- ================= SIDEBAR ================= -->
 <aside class="sidebar">
   <div class="logo">🛡 VendorVerify</div>
 
@@ -205,135 +202,88 @@ hr{
     <button class="active" onclick="showPage('dash',this)">📊 Dashboard</button>
     <button onclick="showPage('vendors',this)">👤 Vendors</button>
     <button onclick="showPage('products',this)">📦 Products</button>
-    <button onclick="showPage('qr',this)">🔳 QR Codes</button>
     <button onclick="showPage('audit',this)">📄 Audit Logs</button>
   </div>
 
   <div class="bottom">
-    <button>⬅ Back to Home</button>
-    <button>🚪 Sign Out</button>
+    <button onclick="logout()">🚪 Sign Out</button>
   </div>
 </aside>
 
-<!-- ================= MAIN ================= -->
 <main class="main">
 
 <header class="topbar">
   <h2 id="title">Admin Dashboard</h2>
   <div class="user">
-    <div>admin@gmail.com</div>
-    <small>vedant</small>
+    <div id="adminEmail"></div>
+    <small id="adminName"></small>
   </div>
 </header>
 <hr>
 
-<!-- ================= DASHBOARD ================= -->
+<!-- DASHBOARD -->
 <section id="dash" class="page active">
   <h1>System Overview</h1>
-  <p class="subtitle">Monitor vendors, products, and QR authentication activity.</p>
-
   <div class="cards">
-    <div class="card"><h3>Total Vendors</h3><h1>1</h1></div>
-    <div class="card"><h3>Total Products</h3><h1>1</h1></div>
-    <div class="card"><h3>Total QR Codes</h3><h1>1</h1></div>
-  </div>
-
-  <div class="cards" style="margin-top:25px">
-    <div class="card"><h3>Total Scans</h3><h1>0</h1></div>
-    <div class="card"><h3>Valid Scans</h3><h1>0</h1></div>
-    <div class="card"><h3>Invalid/Fake</h3><h1>0</h1></div>
+    <div class="card"><h3>Total Vendors</h3><h1 id="totalVendors">0</h1></div>
+    <div class="card"><h3>Total Products</h3><h1 id="totalProducts">0</h1></div>
+    <div class="card"><h3>Total Scans</h3><h1 id="totalScans">0</h1></div>
   </div>
 </section>
 
-<!-- ================= VENDORS ================= -->
+<!-- VENDORS -->
 <section id="vendors" class="page">
   <h1>All Vendors</h1>
-  <p class="subtitle">View and manage registered vendors</p>
-
   <div class="table">
     <table>
-      <tr>
-        <th>Vendor</th><th>Code</th><th>Email</th><th>Products</th><th>Status</th><th>Registered</th>
-      </tr>
-      <tr>
-        <td>vedant</td>
-        <td>VND-38409C47</td>
-        <td>admin@gmail.com</td>
-        <td>1</td>
-        <td><span class="badge green">Active</span></td>
-        <td>23/01/2026</td>
-      </tr>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Vendor Code</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="vendorTable"></tbody>
     </table>
   </div>
 </section>
 
-<!-- ================= PRODUCTS ================= -->
+<!-- PRODUCTS -->
 <section id="products" class="page">
   <h1>All Products</h1>
-  <p class="subtitle">View all registered products across vendors</p>
-
   <div class="table">
     <table>
-      <tr>
-        <th>Product</th><th>Vendor</th><th>Category</th><th>Status</th><th>Scans</th><th>Created</th>
-      </tr>
-      <tr>
-        <td>hj</td>
-        <td>vedant</td>
-        <td>game</td>
-        <td><span class="badge green">active</span></td>
-        <td>0</td>
-        <td>23/01/2026</td>
-      </tr>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Vendor</th>
+          <th>Category</th>
+          <th>QR</th>
+          <th>Scans</th>
+        </tr>
+      </thead>
+      <tbody id="productTable"></tbody>
     </table>
   </div>
 </section>
 
-<!-- ================= QR ================= -->
-<section id="qr" class="page">
-  <h1>All QR Codes</h1>
-  <p class="subtitle">Monitor all generated QR codes and their usage</p>
-
-  <div class="table">
-    <table>
-      <tr>
-        <th>Token</th><th>Product</th><th>Vendor</th><th>Status</th><th>Scans</th><th>Created</th>
-      </tr>
-      <tr>
-        <td>QR-F25EFE8A...</td>
-        <td>hj</td>
-        <td>vedant</td>
-        <td><span class="badge green">Active</span></td>
-        <td>0</td>
-        <td>23/01/2026</td>
-      </tr>
-    </table>
-  </div>
-</section>
-
-<!-- ================= AUDIT ================= -->
+<!-- AUDIT -->
 <section id="audit" class="page">
   <h1>Audit Logs</h1>
-  <p class="subtitle">Complete history of all QR scan attempts</p>
-
-  <div class="audit-cards">
-    <div class="audit-card success">
-      <div class="icon">✔</div>
-      <div><h2>0</h2><p>Valid Scans</p></div>
-    </div>
-    <div class="audit-card danger">
-      <div class="icon">✖</div>
-      <div><h2>0</h2><p>Invalid/Fake</p></div>
-    </div>
-    <div class="audit-card warning">
-      <div class="icon">⚠</div>
-      <div><h2>0</h2><p>Already Used</p></div>
-    </div>
-  </div>
-
-  <div class="audit-box">
-    📄
-    <p>No scan logs yet</p>
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th>QR</th>
+          <th>Product</th>
+          <th>Vendor</th>
+          <th>Type</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="auditTable"></tbody>
+    </table>
   </div>
 </section>
 
@@ -341,19 +291,109 @@ hr{
 </div>
 
 <script>
-function showPage(id,btn){
+
+const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
+const name = localStorage.getItem("name");
+
+if (!token || role !== "admin") {
+  window.location.href = "admin.html";
+}
+
+document.getElementById("adminName").innerText = name;
+
+async function loadDashboard() {
+  const res = await fetch("/api/admin/dashboard", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const data = await res.json();
+  document.getElementById("totalVendors").innerText = data.vendors;
+  document.getElementById("totalProducts").innerText = data.products;
+  document.getElementById("totalScans").innerText = data.scans;
+}
+
+async function loadVendors() {
+  const res = await fetch("/api/admin/vendors", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const vendors = await res.json();
+
+  const table = document.getElementById("vendorTable");
+  table.innerHTML = "";
+  vendors.forEach(v => {
+    table.innerHTML += `
+      <tr>
+        <td>${v.name}</td>
+        <td>${v.email}</td>
+        <td>${v.vendorCode || "-"}</td>
+        <td>${v.status}</td>
+      </tr>
+    `;
+  });
+}
+
+async function loadProducts() {
+  const res = await fetch("/api/admin/products", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const products = await res.json();
+
+  const table = document.getElementById("productTable");
+  table.innerHTML = "";
+  products.forEach(p => {
+    table.innerHTML += `
+      <tr>
+        <td>${p.name}</td>
+        <td>${p.vendor?.name || "-"}</td>
+        <td>${p.category}</td>
+        <td>${p.qrToken}</td>
+        <td>${p.scans}</td>
+      </tr>
+    `;
+  });
+}
+
+async function loadAudit() {
+  const res = await fetch("/api/admin/audit", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const logs = await res.json();
+
+  const table = document.getElementById("auditTable");
+  table.innerHTML = "";
+  logs.forEach(l => {
+    table.innerHTML += `
+      <tr>
+        <td>${l.qrToken}</td>
+        <td>${l.product?.name || "-"}</td>
+        <td>${l.vendor?.name || "-"}</td>
+        <td>${l.type}</td>
+        <td>${new Date(l.createdAt).toLocaleString()}</td>
+      </tr>
+    `;
+  });
+}
+
+function showPage(id, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 
-  document.getElementById("title").innerText =
-    id==="dash"?"Admin Dashboard":
-    id==="vendors"?"Vendors":
-    id==="products"?"Products":
-    id==="qr"?"QR Codes":"Audit Logs";
+  if(id === "dash") loadDashboard();
+  if(id === "vendors") loadVendors();
+  if(id === "products") loadProducts();
+  if(id === "audit") loadAudit();
 }
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "admin.html";
+}
+
+loadDashboard();
+
 </script>
 
 </body>
