@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VendorVerify</title>
+  <link rel="stylesheet" href="home.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">
+    <span>VendorVerify</span>
+    <small>Smart QR Authentication</small>
+  </div>
+  <nav>
+    <a href="vendor.html">Vendor Login</a>
+    <a href="admin.html" class="admin-btn">Admin</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Verify Product<br>Authenticity Instantly</h1>
+  <p>
+    Protect yourself from counterfeit products. Scan the QR code to instantly verify.
+  </p>
+
+  <button class="primary-btn" onclick="openScanModal()">
+    Scan QR Code
+  </button>
+</section>
+
+<script>
+
+let html5QrCode = null;
+let cameraRunning = false;
+
+// OPEN SCAN MODAL
+function openScanModal() {
+
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="scan-modal" id="scanModal">
+      <div class="scan-box">
+
+        <div class="scan-header">
+          <h2>Scan QR Code</h2>
+          <span id="closeScanBtn" style="cursor:pointer;">✖</span>
+        </div>
+
+        <div id="reader" style="width:100%; margin-top:15px;"></div>
+
+        <p style="margin-top:15px;">
+          Point your camera at a VendorVerify QR code
+        </p>
+
+      </div>
+    </div>
+  `);
+
+  document.getElementById("closeScanBtn").addEventListener("click", closeScanModal);
+
+  html5QrCode = new Html5Qrcode("reader");
+
+  Html5Qrcode.getCameras().then(devices => {
+    if (devices.length) {
+      html5QrCode.start(
+        devices[0].id,
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          handleDecoded(decodedText);
+        }
+      ).then(() => cameraRunning = true);
+    }
+  });
+}
+
+// STOP CAMERA
+function stopCamera() {
+  if (html5QrCode && cameraRunning) {
+    html5QrCode.stop().then(() => {
+      cameraRunning = false;
+    }).catch(() => {});
+  }
+}
+
+// CLOSE MODAL
+function closeScanModal() {
+  stopCamera();
+  const modal = document.getElementById("scanModal");
+  if (modal) modal.remove();
+}
+
+// HANDLE TOKEN
+function handleDecoded(rawToken) {
+
+  if (!rawToken) {
+    showFake();
+    return;
+  }
+
+  const token = rawToken.trim();
+  closeScanModal();
+  verifyQR(token);
+}
+
+// VERIFY BACKEND
+async function verifyQR(token) {
+
+  try {
+
+    const res = await fetch("/api/scan/" + encodeURIComponent(token));
+
+    if (!res.ok) {
+      showFake();
+      return;
+    }
+
+    const data = await res.json();
+
+    if (data.valid) {
+      showVerified(data.product);
+    } else {
+      showFake();
+    }
+
+  } catch (err) {
+    showFake();
+  }
+}
+
+// VERIFIED POPUP
+function showVerified(product) {
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="result-modal">
+      <div class="result-box">
+        <div class="result-header green">
+          <h1>VERIFIED PRODUCT</h1>
+        </div>
+        <div class="result-body">
+          <p><strong>Product Name:</strong> ${product.name}</p>
+          <p><strong>Category:</strong> ${product.category}</p>
+        </div>
+        <button onclick="closeResult()">Scan Another Product</button>
+      </div>
+    </div>
+  `);
+}
+
+// FAKE POPUP
+function showFake() {
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="result-modal">
+      <div class="result-box">
+        <div class="result-header red">
+          <h1>FAKE / INVALID QR</h1>
+        </div>
+        <button onclick="closeResult()">Scan Another Product</button>
+      </div>
+    </div>
+  `);
+}
+
+function closeResult() {
+  const result = document.querySelector(".result-modal");
+  if (result) result.remove();
+}
+
+</script>
+
+</body>
+</html>

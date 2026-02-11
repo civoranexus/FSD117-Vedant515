@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Portal</title>
+  <link rel="stylesheet" href="admin.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<a href="home.html" class="back">← Back to Home</a>
+
+<div class="container">
+
+  <div class="icon">🛡️</div>
+
+  <h1>Admin Portal</h1>
+  <p class="subtitle">System administration access</p>
+
+  <form id="adminLoginForm">
+    <label>Email</label>
+    <div class="input-box">
+      📧
+      <input type="email" id="adminEmail" required>
+    </div>
+
+    <label>Password</label>
+    <div class="input-box">
+      🔒
+      <input type="password" id="adminPassword" required>
+    </div>
+
+    <button type="submit" class="submit-btn">Sign In as Admin</button>
+  </form>
+
+  <div class="note">
+    <strong>Note:</strong> Admin accounts can only be created by system administrators.
+  </div>
+
+</div>
+
+<p class="footer">🔒 Secure Admin Access</p>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const form = document.getElementById("adminLoginForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("adminEmail").value;
+    const password = document.getElementById("adminPassword").value;
+
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+    console.log("ADMIN LOGIN RESPONSE:", data);
+
+    if (data.token && data.role === "admin") {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+      localStorage.setItem("name", data.name);
+
+      window.location.href = "mainadmin.html";
+    } else {
+      alert(data.message || "Access Denied");
+    }
+  });
+
+});
+</script>
+
+</body>
+</html>

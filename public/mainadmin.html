@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VendorVerify Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ================= RESET ================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+body{
+  background:#f5f6f8;
+}
+
+/* ================= LAYOUT ================= */
+.app{
+  display:flex;
+  height:100vh;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+  width:260px;
+  background:linear-gradient(#0f172a,#020617);
+  color:#fff;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+}
+.logo{
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:40px;
+}
+.nav button{
+  width:100%;
+  background:none;
+  border:none;
+  color:#fff;
+  text-align:left;
+  padding:14px 18px;
+  border-radius:14px;
+  margin-bottom:10px;
+  cursor:pointer;
+  opacity:.7;
+}
+.nav button.active,
+.nav button:hover{
+  background:rgba(255,255,255,.15);
+  opacity:1;
+}
+.bottom{
+  margin-top:auto;
+  border-top:1px solid rgba(255,255,255,.2);
+  padding-top:20px;
+}
+
+/* ================= MAIN ================= */
+.main{
+  flex:1;
+  background:#fff;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:22px 40px;
+}
+.topbar h2{
+  font-size:22px;
+}
+.user{
+  text-align:right;
+  font-size:14px;
+}
+hr{
+  border:none;
+  border-top:1px solid #ddd;
+}
+
+/* ================= PAGES ================= */
+.page{
+  display:none;
+  padding:40px;
+}
+.page.active{
+  display:block;
+}
+.subtitle{
+  color:#555;
+  margin:8px 0 30px;
+}
+
+/* ================= CARDS ================= */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:25px;
+}
+.card{
+  background:#fff;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+.card h3{
+  font-size:14px;
+  color:#555;
+}
+.card h1{
+  margin-top:8px;
+  font-size:28px;
+}
+
+/* ================= TABLE ================= */
+.table{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  overflow:hidden;
+}
+.table table{
+  width:100%;
+  border-collapse:collapse;
+}
+.table th,
+.table td{
+  padding:18px;
+  text-align:left;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+.badge{
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:13px;
+}
+.green{background:#d1fae5;color:#065f46;}
+.red{background:#fee2e2;color:#991b1b;}
+.yellow{background:#fef3c7;color:#92400e;}
+
+/* ================= AUDIT ================= */
+.audit-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:25px;
+  margin-bottom:30px;
+}
+.audit-card{
+  background:#fff;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  display:flex;
+  gap:15px;
+  align-items:center;
+}
+.audit-card .icon{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+}
+.success .icon{background:#d1fae5;color:#065f46;}
+.danger .icon{background:#fee2e2;color:#991b1b;}
+.warning .icon{background:#fef3c7;color:#92400e;}
+
+.audit-box{
+  background:#fff;
+  border-radius:18px;
+  padding:60px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+.audit-box p{
+  margin-top:10px;
+  color:#666;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+  .cards,.audit-cards{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+}
+</style>
+</head>
+
+<div class="app">
+
+<aside class="sidebar">
+  <div class="logo">🛡 VendorVerify</div>
+
+  <div class="nav">
+    <button class="active" onclick="showPage('dash',this)">📊 Dashboard</button>
+    <button onclick="showPage('vendors',this)">👤 Vendors</button>
+    <button onclick="showPage('products',this)">📦 Products</button>
+    <button onclick="showPage('audit',this)">📄 Audit Logs</button>
+  </div>
+
+  <div class="bottom">
+    <button onclick="logout()">🚪 Sign Out</button>
+  </div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+  <h2 id="title">Admin Dashboard</h2>
+  <div class="user">
+    <div id="adminEmail"></div>
+    <small id="adminName"></small>
+  </div>
+</header>
+<hr>
+
+<!-- DASHBOARD -->
+<section id="dash" class="page active">
+  <h1>System Overview</h1>
+  <div class="cards">
+    <div class="card"><h3>Total Vendors</h3><h1 id="totalVendors">0</h1></div>
+    <div class="card"><h3>Total Products</h3><h1 id="totalProducts">0</h1></div>
+    <div class="card"><h3>Total Scans</h3><h1 id="totalScans">0</h1></div>
+  </div>
+</section>
+
+<!-- VENDORS -->
+<section id="vendors" class="page">
+  <h1>All Vendors</h1>
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Vendor Code</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="vendorTable"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products" class="page">
+  <h1>All Products</h1>
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Vendor</th>
+          <th>Category</th>
+          <th>QR</th>
+          <th>Scans</th>
+        </tr>
+      </thead>
+      <tbody id="productTable"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- AUDIT -->
+<section id="audit" class="page">
+  <h1>Audit Logs</h1>
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th>QR</th>
+          <th>Product</th>
+          <th>Vendor</th>
+          <th>Type</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="auditTable"></tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+
+const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
+const name = localStorage.getItem("name");
+
+if (!token || role !== "admin") {
+  window.location.href = "admin.html";
+}
+
+document.getElementById("adminName").innerText = name;
+
+async function loadDashboard() {
+  const res = await fetch("/api/admin/dashboard", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const data = await res.json();
+  document.getElementById("totalVendors").innerText = data.vendors;
+  document.getElementById("totalProducts").innerText = data.products;
+  document.getElementById("totalScans").innerText = data.scans;
+}
+
+async function loadVendors() {
+  const res = await fetch("/api/admin/vendors", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const vendors = await res.json();
+
+  const table = document.getElementById("vendorTable");
+  table.innerHTML = "";
+  vendors.forEach(v => {
+    table.innerHTML += `
+      <tr>
+        <td>${v.name}</td>
+        <td>${v.email}</td>
+        <td>${v.vendorCode || "-"}</td>
+        <td>${v.status}</td>
+      </tr>
+    `;
+  });
+}
+
+async function loadProducts() {
+  const res = await fetch("/api/admin/products", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const products = await res.json();
+
+  const table = document.getElementById("productTable");
+  table.innerHTML = "";
+  products.forEach(p => {
+    table.innerHTML += `
+      <tr>
+        <td>${p.name}</td>
+        <td>${p.vendor?.name || "-"}</td>
+        <td>${p.category}</td>
+        <td>${p.qrToken}</td>
+        <td>${p.scans}</td>
+      </tr>
+    `;
+  });
+}
+
+async function loadAudit() {
+  const res = await fetch("/api/admin/audit", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const logs = await res.json();
+
+  const table = document.getElementById("auditTable");
+  table.innerHTML = "";
+  logs.forEach(l => {
+    table.innerHTML += `
+      <tr>
+        <td>${l.qrToken}</td>
+        <td>${l.product?.name || "-"}</td>
+        <td>${l.vendor?.name || "-"}</td>
+        <td>${l.type}</td>
+        <td>${new Date(l.createdAt).toLocaleString()}</td>
+      </tr>
+    `;
+  });
+}
+
+function showPage(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if(id === "dash") loadDashboard();
+  if(id === "vendors") loadVendors();
+  if(id === "products") loadProducts();
+  if(id === "audit") loadAudit();
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "admin.html";
+}
+
+loadDashboard();
+
+</script>
+
+</body>
+</html>

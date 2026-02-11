@@ -1,0 +1,36 @@
+{
+  "name": "fsd117-vedant515",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">\r   <img src=\"https://internship.civoranexus.com/CivoraX.png\" alt=\"CivoraX Logo\" width=\"200\"/>\r </p>",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/civoranexus/FSD117-Vedant515.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/civoranexus/FSD117-Vedant515/issues"
+  },
+  "homepage": "https://github.com/civoranexus/FSD117-Vedant515#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.0",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
